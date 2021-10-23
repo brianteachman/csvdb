@@ -12,3 +12,7 @@ panel_id,location,defect_type,cause,origin,uid
 46832446877x,C9,CC,Operator,Bussing Station,0011
 46832446877x,E8,CC,Operator,Bussing Station,0012
 46832446877x,E8,CC,,,0013
+46832446875x,D1,MS,Machine,,0014
+46832446876x,A8,MS,Machine,,0015
+46832446877x,C10,CC,Operator,Bussing Station,0016
+46832446877x,F8,CC,Operator,Bussing Station,0017
