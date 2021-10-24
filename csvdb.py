@@ -45,7 +45,7 @@ class DataManager:
         """
         self._data.to_csv(filename, index=False)
 
-    def save_db(self, filename=None, path=None, date_stamp=True, as_backup=False) -> None:
+    def save(self, filename=None, path=None, date_stamp=True, as_backup=False) -> None:
         """
 
         :param filename:
@@ -65,28 +65,7 @@ class DataManager:
         self._save_to_csv(save_file)
         print(f'LOG: You just wrote the backup file: {save_file}')
 
-    def delete_row(self, uid: int):
-        """
-        Inplace: drop row where UID column is equal to uid
-
-        :param uid:
-        :return:
-        """
-        self._data.drop(self._data[self._data.uid == uid].index, inplace=True)
-        return False
-
-    def delete_rows_where(self, value, col_name):
-        """
-        Inplace: drop row(s) where col_name=value
-
-        :param col_name:
-        :param value:
-        :return: None
-        """
-        self._data.drop(self._data[self._data[col_name] == value].index, inplace=True)
-        return False
-
-    def insert_row(self, defect_data):
+    def insert(self, defect_data):
         """Insert row into in-memory database.
 
         Example csv entry: 99999999999x,A1,CC,Operator,Bussing Station,9999
@@ -104,14 +83,26 @@ class DataManager:
         # self._data.append(pd.DataFrame(defect_data), ignore_index=True)
         self._data.loc[len(self._data.index)] = defect_data
 
-    def contains(self, value, col_name='uid') -> bool:
-        """Efficiently check for a value. 'uid' is the default column.
-
-        :param value:
-        :param col_name:
-        :return: bool
+    def delete(self, uid: int):
         """
-        return self._data[col_name].isin([value]).any()
+        Inplace: drop row where UID column is equal to uid
+
+        :param uid:
+        :return:
+        """
+        self._data.drop(self._data[self._data.uid == uid].index, inplace=True)
+        return False
+
+    def delete_where(self, value, col_name):
+        """
+        Inplace: drop row(s) where col_name=value
+
+        :param col_name:
+        :param value:
+        :return: None
+        """
+        self._data.drop(self._data[self._data[col_name] == value].index, inplace=True)
+        return False
 
     def info(self):
         """ Wrapper method for pandas.DataFrame.info()."""
@@ -120,6 +111,15 @@ class DataManager:
     def dump(self):
         """ Print pandas.DataFrame to the stream in readable format."""
         print(self._data)
+
+    def contains(self, value, col_name='uid') -> bool:
+        """Efficiently check for a value. 'uid' is the default column.
+
+        :param value:
+        :param col_name:
+        :return: bool
+        """
+        return self._data[col_name].isin([value]).any()
 
     def row_count(self) -> int:
         """ Return number of rows in the dataset (DataFrame)."""

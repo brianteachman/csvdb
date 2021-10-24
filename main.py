@@ -24,7 +24,8 @@ if __name__ == '__main__':
     # =========================================================================
     db = DataManager(DATA_FILE, DATA_DIR)
     # =========================================================================
-    print("Testing the defects database", end='\n\n')
+    print("Testing the DataManager on a defects database", end='\n\n')
+    print(db.__class__)
     print(db.__doc__)
     # =========================================================================
     print(f'Starting dataset: {db.row_count()} rows.', end='\n\n')
@@ -35,10 +36,10 @@ if __name__ == '__main__':
     # db.delete_row(uid)
     col_name = 'uid'
     value = uid
-    db.delete_rows_where(value, col_name)  # It never happened
+    db.delete_where(value, col_name)  # It never happened
     col_name = 'cause'
     value = "Machine"
-    db.delete_rows_where(value, col_name)  # Maintenance is on it
+    db.delete_where(value, col_name)  # Maintenance is on it
     # =========================================================================
     print(f'\nAfter delete method called on uid={uid} and {col_name}={value}: {db.row_count()} rows left.', end='\n\n')
     db.dump()

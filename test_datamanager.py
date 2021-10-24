@@ -7,7 +7,7 @@
 
     Run this test using this command:
 
-        python -m unittest test_defect_db.py
+        python -m unittest test_datamanager.py
 
     Read more here: https://docs.python.org/3/library/unittest.html
 """
@@ -51,26 +51,26 @@ class TestDefectDb(unittest.TestCase):
         self.assertEqual(self.db.count('Nuclear Meltdown', 'defect_type'), 0, '0 nukes here')
 
     def test_insert_row(self):
-        self.db.insert_row(self.test_defect)
+        self.db.insert(self.test_defect)
         self.assertEqual(self.db.row_count(), self.data_size + 1, 'Does not have added row')
         self.assertTrue(self.db.contains(self.test_defect['uid']), 'No rows contain added UID')
 
     def test_delete_row(self):
-        self.db.delete_row(5)
+        self.db.delete(5)
         self.assertEqual(self.db.row_count(), self.data_size - 1, 'Incorrect number of rows')
         self.assertFalse(self.db.contains(5), 'UID #5 should not exist here since we deleted it')
         # self.assertFalse(5 in self.db._data.uid)
 
     def test_delete_rows_where(self):
-        self.db.delete_rows_where('MS', 'defect_type')  # There are 4 of these in our dataset
+        self.db.delete_where('MS', 'defect_type')  # There are 4 of these in our dataset
         self.assertEqual(self.db.row_count(), self.data_size - 4, 'Incorrect number of rows')
 
     def test_delete_row_where_uid_doesnt_exist(self):
-        self.db.delete_row(self.data_size + 1)  # Add one more than exist in the set
+        self.db.delete(self.data_size + 1)  # Add one more than exist in the set
         self.assertEqual(self.db.row_count(), self.data_size, 'Nothing deleted, should have same number of rows')
 
     @unittest.skip
-    def test_save_db(self):
+    def test_save(self):
         self.fail()
 
 
