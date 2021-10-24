@@ -13,12 +13,12 @@
 """
 import unittest
 import pandas as pd
-from csvdb import DefectDb
+from csvdb import DataManager
 
 
 class TestDefectDb(unittest.TestCase):
 
-    # Example csv entry: 99999999999x,A1,CC,Operator,Bussing Station,9999
+    # Example csv entry: 999999999999,A1,CC,Operator,Station 1,9999
     test_defect = {
         'panel_id': '99999999999x',
         'location': 'A1',
@@ -29,8 +29,9 @@ class TestDefectDb(unittest.TestCase):
     }
 
     def setUp(self):
+        # Did you create 'data/datatable.csv' ?
         self.baseline = pd.read_csv('data/datatable.csv')
-        self.db = DefectDb('datatable.csv', 'data')
+        self.db = DataManager('datatable.csv', 'data')
         self.data_size = len(self.baseline)
 
     def test_row_count(self):

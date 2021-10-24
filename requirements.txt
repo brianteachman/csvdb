@@ -1,0 +1,7 @@
+###### Requirements without Version Specifiers ######
+#pytest
+#pytest-cov
+pandas
+
+###### Refer to other requirements files ######
+#-r other-requirements.txt

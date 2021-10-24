@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # =============================================================================
-# Author:  Brian Teachman
-# Date:    10/21/2021
+# License: WTFPL
 # =============================================================================
 """Getting to grips with the pandas DataFrame.
 
@@ -12,16 +11,18 @@
     Read more here: https://pandas.pydata.org/pandas-docs/stable/reference/frame.html
 """
 
-from csvdb import DefectDb
+from csvdb import DataManager
 
 # =============================================================================
 DATA_DIR = "data"
-DATA_FILE = "datatable.csv"
+DATA_FILE = "datatable.csv"  # Assuming 'data/datatable.csv' exist
+# -----------------------------------------------------------------------------
+# Example csv entry: 999999999999,A1,CC,Operator,Station 1,9999
 # =============================================================================
 
 if __name__ == '__main__':
     # =========================================================================
-    db = DefectDb(DATA_FILE, DATA_DIR)
+    db = DataManager(DATA_FILE, DATA_DIR)
     # =========================================================================
     print("Testing the defects database", end='\n\n')
     print(db.__doc__)

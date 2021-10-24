@@ -11,7 +11,7 @@ import pandas as pd
 from datetime import date
 
 
-class DefectDb:
+class DataManager:
     """The Defects database is a DAL class based on pandas.DataFrame which persist data in a CSV file.
 
     1. First column is the panels ID.
