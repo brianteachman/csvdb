@@ -15,6 +15,7 @@ Constraints:
 
     $ git clone https://github.com/brianteachman/csvdb
     $ cd csvdb
+    $ pip install -r requirements.txt
 
 Run example main:
 
