@@ -1,6 +1,6 @@
-# csvdb python 3 module
+# Getting to grips with the pandas DataFrame
 
-Getting to grips with the pandas DataFrame.
+csvdb python 3 module
 
 ## DefectDb Class
 
@@ -11,7 +11,7 @@ Constraints:
   1. First column is the panels ID.
   2. Panel ID can exist in more than one entry
   
-## Usage
+## Setup
 
     $ git clone https://github.com/brianteachman/csvdb
     $ cd csvdb
