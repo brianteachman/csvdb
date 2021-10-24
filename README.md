@@ -22,4 +22,4 @@ Run example main:
  
 Run test:
  
-    $ python -m unittest test_defect_db.py
+    $ python -m unittest test_datamanager.py
