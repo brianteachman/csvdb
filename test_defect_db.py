@@ -47,7 +47,7 @@ class TestDefectDb(unittest.TestCase):
         self.assertTrue(self.db.contains('Machine', 'cause'), 'A monkey?')
 
     def test_count(self):
-        self.assertEqual(self.db.count('MS', 'defect_type'), 6, 'There are actually 6 missed solders in the dataset')
+        self.assertEqual(self.db.count('MS', 'defect_type'), 4, 'There are actually 6 missed solders in the dataset')
         self.assertEqual(self.db.count('Nuclear Meltdown', 'defect_type'), 0, '0 nukes here')
 
     def test_insert_row(self):
@@ -62,8 +62,8 @@ class TestDefectDb(unittest.TestCase):
         # self.assertFalse(5 in self.db._data.uid)
 
     def test_delete_rows_where(self):
-        self.db.delete_rows_where('MS', 'defect_type')  # There are 6 of these in our dataset
-        self.assertEqual(self.db.row_count(), self.data_size - 6, 'Incorrect number of rows')
+        self.db.delete_rows_where('MS', 'defect_type')  # There are 4 of these in our dataset
+        self.assertEqual(self.db.row_count(), self.data_size - 4, 'Incorrect number of rows')
 
     def test_delete_row_where_uid_doesnt_exist(self):
         self.db.delete_row(self.data_size + 1)  # Add one more than exist in the set
