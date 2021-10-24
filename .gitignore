@@ -4,5 +4,5 @@ __pycache__
 *.bak
 tweb
 
-#data
-#!data/testdata.csv
+data/*
+!data/testdata.csv

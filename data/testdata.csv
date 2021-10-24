@@ -16,3 +16,4 @@ panel_id,location,defect_type,cause,origin,uid
 46832446879,A2,CC,,,0015
 46832446879,E8,CC,,,0016
 46832446880,B8,TD,Machine,Station 2,0017
+46832446880,B9,TD,Machine,Station 2,0018
