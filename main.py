@@ -15,7 +15,7 @@ from csvdb import DataManager
 
 # =============================================================================
 DATA_DIR = "data"
-DATA_FILE = "datatable.csv"  # Assuming 'data/datatable.csv' exist
+DATA_FILE = "testdata.csv"  # Assuming 'data/testdata.csv' exist
 # -----------------------------------------------------------------------------
 # Example csv entry: 999999999999,A1,CC,Operator,Station 1,9999
 # =============================================================================
@@ -45,7 +45,7 @@ if __name__ == '__main__':
     db.dump()
     # =========================================================================
     print(f'\nEntry #5 and all Machine defects scrubbed. All clean. :)', end='\n\n')
-    # db.save_db()
+    db.save()
 
     # Hourly reporting
     print(f"CC count\t| {db.count('CC', 'defect_type')}")

@@ -3,7 +3,7 @@
 # Author:  Brian Teachman
 # Date:    10/22/2021
 # =============================================================================
-"""Database abstraction layer (DAL) for a manufacturing production defects database.
+"""Database abstraction layer (DAL) based on the Data Mapper pattern.
 
 """
 
@@ -12,7 +12,7 @@ from datetime import date
 
 
 class DataManager:
-    """The Defects database is a DAL class based on pandas.DataFrame which persist data in a CSV file.
+    """Data manager is a DAL class based on pandas.DataFrame which persist data in a CSV file.
 
     1. First column is the panels ID.
     2. Panel ID can exist in more than one entry
