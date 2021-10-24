@@ -20,7 +20,7 @@ class TestDefectDb(unittest.TestCase):
 
     # Example csv entry: 999999999999,A1,CC,Operator,Station 1,9999
     test_defect = {
-        'panel_id': '99999999999x',
+        'panel_id': '99999999999',
         'location': 'A1',
         'defect_type': 'CC',
         'cause': 'Operator',
@@ -47,7 +47,7 @@ class TestDefectDb(unittest.TestCase):
         self.assertTrue(self.db.contains('Machine', 'cause'), 'A monkey?')
 
     def test_count(self):
-        self.assertEqual(self.db.count('MS', 'defect_type'), 4, 'There are actually 6 missed solders in the dataset')
+        self.assertEqual(self.db.count('MS', 'defect_type'), 4, 'There are actually 4 missed solders in the dataset')
         self.assertEqual(self.db.count('Nuclear Meltdown', 'defect_type'), 0, '0 nukes here')
 
     def test_insert_row(self):
