@@ -4,7 +4,7 @@ csvdb python 3 module
 
 ## DataManager Class
 
-The Defects database is a DAL class based on pandas.DataFrame which persist data in a CSV file.
+The DataManager is a DAL class based on pandas.DataFrame which persist data in a CSV file.
 
 Constraints:
 
