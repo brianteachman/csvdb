@@ -8,6 +8,8 @@
 """
 
 import pandas as pd
+import os
+from stat import S_IREAD, S_IWUSR, S_IRGRP, S_IROTH
 from datetime import date
 
 
@@ -29,9 +31,9 @@ class DataManager:
 
         Note: this method is destructive as it overwrites self.data
 
-        :param filename:
-        :param path:
-        :return:
+        :param filename: str   Name of CSV file to load.
+        :param path:     str   Path of directory the CSV file is located.
+        :return: pd.DataFrame
         """
         file_name = f"{self._dataDir}/{self._dataFile}"
         return pd.read_csv(file_name)
@@ -40,19 +42,27 @@ class DataManager:
         """
         Wrapper method for pandas.DataFrame.to_csv().
 
-        :param filename:
-        :return:
+        :param filename: str   Name of CSV file to save to.
+        :return:         None
         """
+        # If exist, change permissions of database to Read & Write for User
+        if os.path.isfile(filename):
+            os.chmod(filename, S_IWUSR|S_IREAD)
+
         self._data.to_csv(filename, index=False)
+
+        # Change permission of database to Read Only
+        os.chmod(filename, S_IREAD|S_IRGRP|S_IROTH)
 
     def save(self, filename=None, path=None, date_stamp=True, as_backup=False) -> None:
         """
+        Prepares filename and calls method to save DB to CSV file.
 
-        :param filename:
-        :param path:
-        :param date_stamp:
-        :param as_backup:
-        :return:
+        :param filename:   str   Name of CSV file to save to.
+        :param path:       str   Path of directory to save CSV file in.
+        :param date_stamp: bool  Add Date to saved file name?
+        :param as_backup:  bool  Prepend '.bak' to file name?
+        :return:           None
         """
         file_dir = path if path else self._dataDir
         file_name = filename if filename else self._dataFile
@@ -63,10 +73,11 @@ class DataManager:
         if as_backup:
             save_file = f'{save_file}.bak'
         self._save_to_csv(save_file)
-        print(f'LOG: You just wrote the backup file: {save_file}')
+        # print(f'LOG: You just wrote the backup file: {save_file}')
 
     def insert(self, defect_data):
-        """Insert row into in-memory database.
+        """
+        Insert row into in-memory database.
 
         Example csv entry: 99999999999x,A1,CC,Operator,Bussing Station,9999
 
@@ -83,17 +94,13 @@ class DataManager:
         # self._data.append(pd.DataFrame(defect_data), ignore_index=True)
         self._data.loc[len(self._data.index)] = defect_data
 
-    def delete(self, uid: int):
+    def edit(self, dataset):
         """
-        Inplace: drop row where UID column is equal to uid
 
-        :param uid:
-        :return:
         """
-        self._data.drop(self._data[self._data.uid == uid].index, inplace=True)
-        return False
+        return None
 
-    def delete_where(self, value, col_name):
+    def delete_where(self, value, col_name) -> bool:
         """
         Inplace: drop row(s) where col_name=value
 
@@ -101,14 +108,29 @@ class DataManager:
         :param value:
         :return: None
         """
-        self._data.drop(self._data[self._data[col_name] == value].index, inplace=True)
-        return False
+        hasValue = self.contains(value, col_name)
+        if hasValue:
+            self._data.drop(self._data[self._data[col_name] == value].index, inplace=True)
+            self.save()
+        return hasValue
 
-    def info(self):
+    def delete(self, uid: int) -> bool:
+        """
+        Inplace: drop row where UID column is equal to uid
+
+        :param uid:
+        :return:
+        """
+        hasUID = self.contains(uid)
+        if hasUID:
+            self.delete_where(uid, 'uid')
+        return hasUID
+
+    def info(self) -> None:
         """ Wrapper method for pandas.DataFrame.info()."""
         self._data.info()
 
-    def dump(self):
+    def dump(self) -> None:
         """ Print pandas.DataFrame to the stream in readable format."""
         print(self._data)
 
