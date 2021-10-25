@@ -121,10 +121,7 @@ class DataManager:
         :param uid:
         :return:
         """
-        hasUID = self.contains(uid)
-        if hasUID:
-            self.delete_where(uid, 'uid')
-        return hasUID
+        return self.delete_where(uid, 'uid')
 
     def info(self) -> None:
         """ Wrapper method for pandas.DataFrame.info()."""
