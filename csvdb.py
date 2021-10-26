@@ -20,9 +20,10 @@ class DataManager:
     2. Panel ID can exist in more than one entry
     """
 
-    def __init__(self, file_name: str, file_dir: str):
+    def __init__(self, file_name: str, file_dir: str, uid: str):
         self._dataFile = file_name
         self._dataDir = file_dir
+        self.default_id_col = uid
         self._data = self._get_from_csv()
 
     def _get_from_csv(self, filename=None, path=None) -> pd.DataFrame:
@@ -106,7 +107,7 @@ class DataManager:
 
         :param col_name:
         :param value:
-        :return: None
+        :return: bool    Whether or not entry was removed
         """
         hasValue = self.contains(value, col_name)
         if hasValue:
@@ -116,12 +117,12 @@ class DataManager:
 
     def delete(self, uid: int) -> bool:
         """
-        Inplace: drop row where UID column is equal to uid
+        Inplace: drop row where defualt UID column is equal to uid
 
-        :param uid:
-        :return:
+        :param uid: int   The Unique row ID
+        :return:    bool  Whether or not entry was removed
         """
-        return self.delete_where(uid, 'uid')
+        return self.delete_where(uid, self.default_id_col)
 
     def info(self) -> None:
         """ Wrapper method for pandas.DataFrame.info()."""
@@ -131,13 +132,15 @@ class DataManager:
         """ Print pandas.DataFrame to the stream in readable format."""
         print(self._data)
 
-    def contains(self, value, col_name='uid') -> bool:
+    def contains(self, value, col_name=None) -> bool:
         """Efficiently check for a value. 'uid' is the default column.
 
         :param value:
         :param col_name:
         :return: bool
         """
+        if not col_name:
+            col_name = self.default_id_col
         return self._data[col_name].isin([value]).any()
 
     def row_count(self) -> int:
