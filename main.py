@@ -11,7 +11,7 @@
     Read more here: https://pandas.pydata.org/pandas-docs/stable/reference/frame.html
 """
 
-from csvdb import DataManager
+from csvdm import DataManager
 
 # =============================================================================
 DATA_DIR = "data"

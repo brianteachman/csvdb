@@ -6,19 +6,19 @@
 
     Run this test using this command:
 
-        python -m unittest test_datamanager.py
+        python -m unittest datamanager.py
 
     Read more here: https://docs.python.org/3/library/unittest.html
 """
 import unittest
 import pandas as pd
-from csvdb import DataManager
+from csvdm import DataManager
 
 
-class TestDefectDb(unittest.TestCase):
+class TestDataManager(unittest.TestCase):
 
     # Example csv entry: 999999999999,A1,CC,Operator,Station 1,9999
-    test_defect = [[
+    test_entry = [[
         '99999999999',      # panel_id
         'A1',               # location
         'CC',               # defect_type
@@ -27,7 +27,7 @@ class TestDefectDb(unittest.TestCase):
     ]]
 
     def setUp(self):
-        # Did you create 'data/testdata.csv' ?
+        # Is your working directory set to the project root and create 'data/testdata.csv' ?
         self.baseline = pd.read_csv('data/testdata.csv')
         self.db = DataManager('testdata.csv', 'data', 'uid')
         self.data_size = len(self.baseline)
@@ -51,7 +51,7 @@ class TestDefectDb(unittest.TestCase):
     def test_insert_row(self):
         next_uid = self.db.get_next_uid()
         self.assertFalse(self.db.contains(next_uid), 'The next UID should not be there')
-        self.db.insert(self.test_defect)
+        self.db.insert(self.test_entry)
         self.assertEqual(self.db.row_count(), self.data_size + 1, 'Does not have added row')
         self.assertTrue(self.db.contains(next_uid), 'No rows contain added UID')
 

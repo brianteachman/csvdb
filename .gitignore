@@ -4,5 +4,10 @@ __pycache__
 *.bak
 tweb
 
+# Build artifacts
+dist/
+*.egg-info/
+*.egg
+
 data/*
 !data/testdata.csv

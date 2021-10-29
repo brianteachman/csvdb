@@ -2,24 +2,23 @@
 # =============================================================================
 # License: WTFPL
 # =============================================================================
-"""Database abstraction layer (DAL) loosely based on the Data Mapper pattern.
-
-"""
-import csv
+"""A CSV database abstraction layer (DAL) loosely based on the Data Mapper pattern."""
 
 import pandas as pd
+import csv
 import os
 from stat import S_IREAD, S_IWUSR, S_IRGRP, S_IROTH
 from datetime import date
 
 
-def _lock_file(filename, unlock=False) -> None:
+def _lock_file(filename, unlock=False) -> bool:
     """
     This method locks the currently set CSV datafile.
 
     :param unlock: bool   If is_writable it True, this function locks the file.
-    :return:       None
+    :return:       bool   Whether or not the file is locked.
     """
+    is_locked = True
     if os.path.isfile(filename):
         if not unlock:
             # Change permission of database to Read Only
@@ -27,6 +26,8 @@ def _lock_file(filename, unlock=False) -> None:
         else:
             # If exist, change permissions of database to Read & Write for User
             os.chmod(filename, S_IWUSR | S_IREAD)
+            is_locked = False
+    return is_locked
 
 
 class DataManager:
