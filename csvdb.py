@@ -2,9 +2,7 @@
 # =============================================================================
 # License: WTFPL
 # =============================================================================
-"""Database abstraction layer (DAL) loosely based on the Data Mapper pattern.
-
-"""
+"""Database abstraction layer (DAL) loosely based on the Data Mapper pattern."""
 
 import pandas as pd
 import os
