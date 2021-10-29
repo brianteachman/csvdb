@@ -2,4 +2,4 @@
 pandas
 
 ###### Refer to other requirements files ######
-#-r other-requirements.txt
+-e git+https://github.com/brianteachman/csvdb.git#egg=csvdm-tws
