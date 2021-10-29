@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # =============================================================================
-# License: WTFPL
+# License: MIT
 # =============================================================================
 """A CSV database abstraction layer (DAL) loosely based on the Data Mapper pattern."""
 

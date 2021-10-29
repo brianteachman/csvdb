@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 # =============================================================================
-# License: WTFPL
+# License: MIT
 # =============================================================================
 """Test cases for the DefectDB module
 
     Run this test using this command:
 
-        python -m unittest datamanager.py
+        python -m unittest tests/datamanager.py
 
     Read more here: https://docs.python.org/3/library/unittest.html
 """

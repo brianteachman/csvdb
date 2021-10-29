@@ -6,7 +6,7 @@
 
     Run this example script using this command:
 
-        python main.py
+        python example.py
 
     Read more here: https://pandas.pydata.org/pandas-docs/stable/reference/frame.html
 """
