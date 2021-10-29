@@ -1,6 +1,6 @@
-# Getting to grips with the pandas DataFrame
+# Getting to grips with the pandas DataFrame as a CSV repository.
 
-csvdb python 3 module
+CSV DataManager (csvdm) Python 3 package.
 
 ## DataManager Class
 
@@ -8,8 +8,8 @@ The DataManager is a DAL class based on pandas.DataFrame which persist data in a
 
 Constraints:
 
-  1. First column is the panels ID.
-  2. Panel ID can exist in more than one entry
+  1. First column is a non-unique entity ID.
+  2. The entity ID can exist in more than one entry.
   
 ## Setup
 
@@ -19,8 +19,8 @@ Constraints:
 
 Run example main:
 
-    $ python main.py
+    $ python example.py
  
 Run test:
  
-    $ python -m unittest test_datamanager.py
+    $ python -m unittest tests/datamanager.py
