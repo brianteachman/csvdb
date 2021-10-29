@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # =============================================================================
-# Author:  Brian Teachman
-# Date:    10/22/2021
+# License: WTFPL
 # =============================================================================
 """Test cases for the DefectDB module
 
@@ -31,7 +30,7 @@ class TestDefectDb(unittest.TestCase):
     def setUp(self):
         # Did you create 'data/testdata.csv' ?
         self.baseline = pd.read_csv('data/testdata.csv')
-        self.db = DataManager('testdata.csv', 'data')
+        self.db = DataManager('testdata.csv', 'data', 'uid')
         self.data_size = len(self.baseline)
 
     def test_row_count(self):

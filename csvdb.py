@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # =============================================================================
-# Author:  Brian Teachman
-# Date:    10/22/2021
+# License: WTFPL
 # =============================================================================
 """Database abstraction layer (DAL) based on the Data Mapper pattern.
 
@@ -21,8 +20,8 @@ class DataManager:
     """
 
     def __init__(self, file_name: str, file_dir: str, uid: str):
-        self._dataFile = file_name
-        self._dataDir = file_dir
+        self._data_file = file_name
+        self._data_dir = file_dir
         self.default_id_col = uid
         self._data = self._get_from_csv()
 
@@ -36,10 +35,10 @@ class DataManager:
         :param path:     str   Path of directory the CSV file is located.
         :return: pd.DataFrame
         """
-        file_name = f"{self._dataDir}/{self._dataFile}"
+        file_name = f"{self._data_dir}/{self._data_file}"
         return pd.read_csv(file_name)
 
-    def _save_to_csv(self, filename):
+    def _save_to_csv(self, filename) -> None:
         """
         Wrapper method for pandas.DataFrame.to_csv().
 
@@ -65,8 +64,8 @@ class DataManager:
         :param as_backup:  bool  Prepend '.bak' to file name?
         :return:           None
         """
-        file_dir = path if path else self._dataDir
-        file_name = filename if filename else self._dataFile
+        file_dir = path if path else self._data_dir
+        file_name = filename if filename else self._data_file
         if date_stamp:
             save_file = f'{file_dir}/{date.today()}-{file_name}'
         else:
@@ -76,13 +75,13 @@ class DataManager:
         self._save_to_csv(save_file)
         # print(f'LOG: You just wrote the backup file: {save_file}')
 
-    def insert(self, defect_data):
+    def insert(self, row_data):
         """
         Insert row into in-memory database.
 
         Example csv entry: 99999999999x,A1,CC,Operator,Bussing Station,9999
 
-        :param defect_data: {
+        :param row_data: {
             'panel_id': '99999999999x',
             'location': 'A1',
             'defect_type': 'CC',
@@ -93,7 +92,7 @@ class DataManager:
         :return: None
         """
         # self._data.append(pd.DataFrame(defect_data), ignore_index=True)
-        self._data.loc[len(self._data.index)] = defect_data
+        self._data.loc[len(self._data.index)] = row_data
 
     def edit(self, dataset):
         """
@@ -109,11 +108,11 @@ class DataManager:
         :param value:
         :return: bool    Whether or not entry was removed
         """
-        hasValue = self.contains(value, col_name)
-        if hasValue:
+        has_value = self.contains(value, col_name)
+        if has_value:
             self._data.drop(self._data[self._data[col_name] == value].index, inplace=True)
             self.save()
-        return hasValue
+        return has_value
 
     def delete(self, uid: int) -> bool:
         """

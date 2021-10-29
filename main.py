@@ -22,7 +22,7 @@ DATA_FILE = "testdata.csv"  # Assuming 'data/testdata.csv' exist
 
 if __name__ == '__main__':
     # =========================================================================
-    db = DataManager(DATA_FILE, DATA_DIR)
+    db = DataManager(DATA_FILE, DATA_DIR, 'uid')
     # =========================================================================
     print("Testing the DataManager on a defects database", end='\n\n')
     print(db.__class__)
