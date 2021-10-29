@@ -2,12 +2,31 @@
 # =============================================================================
 # License: WTFPL
 # =============================================================================
-"""Database abstraction layer (DAL) loosely based on the Data Mapper pattern."""
+"""Database abstraction layer (DAL) loosely based on the Data Mapper pattern.
+
+"""
+import csv
 
 import pandas as pd
 import os
 from stat import S_IREAD, S_IWUSR, S_IRGRP, S_IROTH
 from datetime import date
+
+
+def _lock_file(filename, unlock=False) -> None:
+    """
+    This method locks the currently set CSV datafile.
+
+    :param unlock: bool   If is_writable it True, this function locks the file.
+    :return:       None
+    """
+    if os.path.isfile(filename):
+        if not unlock:
+            # Change permission of database to Read Only
+            os.chmod(filename, S_IREAD | S_IRGRP | S_IROTH)
+        else:
+            # If exist, change permissions of database to Read & Write for User
+            os.chmod(filename, S_IWUSR | S_IREAD)
 
 
 class DataManager:
@@ -23,9 +42,9 @@ class DataManager:
         self.default_id_col = uid
         self._data = self._get_from_csv()
 
-    def _get_uri(self, filename, path, date_stamp=False, as_backup=False):
+    def _get_uri(self, filename=None, path=None, date_stamp=False, as_backup=False):
         """
-        Prepare a string filename of CSV file to load or save.
+        Prepare a string filename of CSV file to load or save. Defaults to file set on init.
 
         :param filename:   str   Name of CSV file to save to.
         :param path:       str   Path of directory to save CSV file in.
@@ -64,18 +83,13 @@ class DataManager:
         :param filename: str   Name of CSV file to save to.
         :return:         None
         """
-        # If exist, change permissions of database to Read & Write for User
-        if os.path.isfile(filename):
-            os.chmod(filename, S_IWUSR | S_IREAD)
-
+        _lock_file(filename, unlock=True)
         self._data.to_csv(filename, index=False)
-
-        # Change permission of database to Read Only
-        os.chmod(filename, S_IREAD | S_IRGRP | S_IROTH)
+        _lock_file(filename)
 
     def save(self, filename=None, path=None, date_stamp=True, as_backup=False) -> None:
         """
-        Prepares filename and calls method to save DB to CSV file.
+        Prepares filename and calls method to save entire DB to CSV file.
 
         :param filename:   str   Name of CSV file to save to.
         :param path:       str   Path of directory to save CSV file in.
@@ -87,24 +101,38 @@ class DataManager:
         self._save_to_csv(save_file)
         # TODO: Setup logging
 
-    def insert(self, row_data):
+    def insert(self, entries) -> int:
         """
-        Insert row into in-memory database.
+        Insert row into in-memory and to disk database.
 
-        Example csv entry: 99999999999x,A1,CC,Operator,Bussing Station,9999
+        Example csv/json entry: 99999999999x,A1,CC,Operator,Bussing Station,9999
 
-        :param row_data: {
-            'panel_id': '99999999999x',
-            'location': 'A1',
-            'defect_type': 'CC',
-            'cause': 'Operator',
-            'origin': 'Bussing Station',
-            'uid': 9999
-        }
-        :return: None
+        :param entries: [
+            [99999999999x,A1,CC,Operator,Bussing Station,9998],
+            [99999999999x,A2,CC,Operator,Bussing Station,9999]
+        ]
+        :return: int    The UID (int) of the newly created entry, or 0 if failed
         """
-        # self._data.append(pd.DataFrame(defect_data), ignore_index=True)
-        self._data.loc[len(self._data.index)] = row_data
+        uid = 0
+        _lock_file(self._get_uri(date_stamp=True), unlock=True)
+        with open(self._get_uri(date_stamp=True), 'a', newline='', encoding='utf-8') as csv_file:
+            csvwriter = csv.writer(csv_file)
+            for row in entries:
+
+                # Add UID to entry
+                uid = self.get_next_uid()
+                row.append(uid)
+
+                # Append the data to the in-memory data structure
+                self._data.loc[len(self._data.index)] = row
+
+                # Append the data to the file on disk
+                csvwriter.writerow(row)
+        _lock_file(self._get_uri(date_stamp=True))
+        return uid
+
+    def get_last_n_rows(self, n) -> pd.DataFrame:
+        return self._data.tail(n)
 
     def edit(self, dataset):
         """
@@ -143,6 +171,9 @@ class DataManager:
         """ Print pandas.DataFrame to the stream in readable format."""
         print(self._data)
 
+    def to_json(self):
+        return self._data.to_json(orient="values")
+
     def contains(self, value, col_name=None) -> bool:
         """Efficiently check for a value. 'uid' is the default column.
 
@@ -167,3 +198,6 @@ class DataManager:
         """
         target = self._data[self._data[col_name] == value]
         return target[col_name].count()
+
+    def get_next_uid(self) -> int:
+        return int(self._data.iloc[-1][self.default_id_col]) + 1

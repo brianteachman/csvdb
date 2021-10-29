@@ -54,3 +54,10 @@ if __name__ == '__main__':
     print(f"Machine count\t| {db.count('Machine', 'cause')}")
     print(f"Operator count\t| {db.count('Operator', 'cause')}")
     print(f"Gremlins count\t| {db.count('Gremlins', 'cause')}")
+
+    # test_defect = [
+    #     ['99999999999', 'A1', 'CC', 'Operator', 'Station 1'],
+    #     ['11111111111', 'A2', 'CC', 'Operator', 'The Pit']
+    # ]
+    # db.insert(test_defect)
+    # print(db.contains('99999999999', 'panel_id'))

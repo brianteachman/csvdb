@@ -18,14 +18,13 @@ from csvdb import DataManager
 class TestDefectDb(unittest.TestCase):
 
     # Example csv entry: 999999999999,A1,CC,Operator,Station 1,9999
-    test_defect = {
-        'panel_id': '99999999999',
-        'location': 'A1',
-        'defect_type': 'CC',
-        'cause': 'Operator',
-        'origin': 'Bussing Station',
-        'uid': 9999
-    }
+    test_defect = [[
+        '99999999999',      # panel_id
+        'A1',               # location
+        'CC',               # defect_type
+        'Operator',         # cause
+        'Bussing Station',  # origin
+    ]]
 
     def setUp(self):
         # Did you create 'data/testdata.csv' ?
@@ -50,9 +49,11 @@ class TestDefectDb(unittest.TestCase):
         self.assertEqual(self.db.count('Nuclear Meltdown', 'defect_type'), 0, '0 nukes here')
 
     def test_insert_row(self):
+        next_uid = self.db.get_next_uid()
+        self.assertFalse(self.db.contains(next_uid), 'The next UID should not be there')
         self.db.insert(self.test_defect)
         self.assertEqual(self.db.row_count(), self.data_size + 1, 'Does not have added row')
-        self.assertTrue(self.db.contains(self.test_defect['uid']), 'No rows contain added UID')
+        self.assertTrue(self.db.contains(next_uid), 'No rows contain added UID')
 
     def test_delete_row(self):
         self.db.delete(5)
