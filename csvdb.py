@@ -2,7 +2,7 @@
 # =============================================================================
 # License: WTFPL
 # =============================================================================
-"""Database abstraction layer (DAL) based on the Data Mapper pattern.
+"""Database abstraction layer (DAL) loosely based on the Data Mapper pattern.
 
 """
 
@@ -25,6 +25,27 @@ class DataManager:
         self.default_id_col = uid
         self._data = self._get_from_csv()
 
+    def _get_uri(self, filename, path, date_stamp=False, as_backup=False):
+        """
+        Prepare a string filename of CSV file to load or save.
+
+        :param filename:   str   Name of CSV file to save to.
+        :param path:       str   Path of directory to save CSV file in.
+        :param date_stamp: bool  Add Date to saved file name?
+        :param as_backup:  bool  Prepend '.bak' to file name?
+        :return:           str   The full path to a file on disk
+        """
+        file_dir = path if path else self._data_dir
+        file_name = filename if filename else self._data_file
+        if date_stamp:
+            save_file = f'{file_dir}/{date.today()}-{file_name}'
+        else:
+            save_file = f'{file_dir}/{file_name}'
+        if as_backup:
+            save_file = f'{save_file}.bak'
+            # TODO: Compress backup file
+        return save_file
+
     def _get_from_csv(self, filename=None, path=None) -> pd.DataFrame:
         """
         Reads a CSV file into memory.
@@ -35,8 +56,8 @@ class DataManager:
         :param path:     str   Path of directory the CSV file is located.
         :return: pd.DataFrame
         """
-        file_name = f"{self._data_dir}/{self._data_file}"
-        return pd.read_csv(file_name)
+        # Do not automatically not prepended a date stamp to the master data set.
+        return pd.read_csv(self._get_uri(filename, path))
 
     def _save_to_csv(self, filename) -> None:
         """
@@ -47,12 +68,12 @@ class DataManager:
         """
         # If exist, change permissions of database to Read & Write for User
         if os.path.isfile(filename):
-            os.chmod(filename, S_IWUSR|S_IREAD)
+            os.chmod(filename, S_IWUSR | S_IREAD)
 
         self._data.to_csv(filename, index=False)
 
         # Change permission of database to Read Only
-        os.chmod(filename, S_IREAD|S_IRGRP|S_IROTH)
+        os.chmod(filename, S_IREAD | S_IRGRP | S_IROTH)
 
     def save(self, filename=None, path=None, date_stamp=True, as_backup=False) -> None:
         """
@@ -64,16 +85,9 @@ class DataManager:
         :param as_backup:  bool  Prepend '.bak' to file name?
         :return:           None
         """
-        file_dir = path if path else self._data_dir
-        file_name = filename if filename else self._data_file
-        if date_stamp:
-            save_file = f'{file_dir}/{date.today()}-{file_name}'
-        else:
-            save_file = f'{file_dir}/{file_name}'
-        if as_backup:
-            save_file = f'{save_file}.bak'
+        save_file = self._get_uri(filename, path, date_stamp, as_backup)
         self._save_to_csv(save_file)
-        # print(f'LOG: You just wrote the backup file: {save_file}')
+        # TODO: Setup logging
 
     def insert(self, row_data):
         """
@@ -116,7 +130,7 @@ class DataManager:
 
     def delete(self, uid: int) -> bool:
         """
-        Inplace: drop row where defualt UID column is equal to uid
+        Inplace: drop row where default UID column is equal to uid
 
         :param uid: int   The Unique row ID
         :return:    bool  Whether or not entry was removed
